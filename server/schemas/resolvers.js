@@ -5,10 +5,10 @@ const resolvers = {
     users: async () => {
       return User.find({});
     },
-    // Add a query to get a specific user by ID
-    user: async (_, { userId }) => {
-      return User.findById(userId);
-    },
+    // // Add a query to get a specific user by ID
+    // user: async (_, { userId }) => {
+    //   return User.findById(userId);
+    // },
   },
   Mutation: {
     createUser: async (_, args) => {

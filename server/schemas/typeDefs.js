@@ -19,7 +19,6 @@ type User {
 }
 
 type Query {
-    book: [Book]
     user: [User]
     users: [User]
     book(bookId:ID!): Book
