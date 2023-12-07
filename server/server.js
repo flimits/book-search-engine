@@ -16,9 +16,11 @@ const server = new ApolloServer({
 
 const startApolloServer = async () => {
   await server.start();
-
+  
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+  
+  app.use('/graphql', expressMiddleware(server));
 
   // if we're in production, serve client/build as static assets
   if (process.env.NODE_ENV === 'production') {
@@ -30,6 +32,9 @@ const startApolloServer = async () => {
   });
 
   // app.use(routes); // more api routes not needed
+  // db.once('open', () => {
+  //   app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
+  // });
   // Server start listing on port PORT and the url for graphQL is also stated how to get there below
   db.once('open', () => {
     app.listen(PORT, () => {
