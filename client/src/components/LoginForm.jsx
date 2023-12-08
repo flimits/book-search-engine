@@ -1,14 +1,19 @@
 // see SignupForm.js for comments
 import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
 
-import { loginUser } from '../utils/API';
+// import { loginUser } from '../utils/API';
 import Auth from '../utils/auth';
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+  // reading through the mutations, error block is not necessary, but if there are issues, at least it can be populated with the error and later presented in the catch statement and console logged out.
+  const [loginUser, { error }] = useMutation(LOGIN_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -26,22 +31,28 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await loginUser(userFormData);
+      // const response = await loginUser(userFormData);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      // if (!response.ok) {
+      //   throw new Error('something went wrong!');
+      // }
 
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
+      // const { token, user } = await response.json();
+      // console.log(user);
+      // Auth.login(token);
+      const { data } = await loginUser({
+        variables: { ...userFormData },
+      });
+      Auth.login(data.loginUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
 
+    // might as well use the error handing
+    console.error("login errors: ", error);
+    // username: '',
     setUserFormData({
-      username: '',
       email: '',
       password: '',
     });
