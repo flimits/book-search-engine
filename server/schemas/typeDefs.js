@@ -18,16 +18,34 @@ type User {
     bookCount: Int
 }
 
-type Query {
-    user: [User]
+input BookInput {
+    author: [String]
+    description: String!
+    title: String!
+    bookId:String!
+    image: String
+    link: String
+}
+
+type Auth {
+    token: ID!
+    user: User
+  }
+
+  type Query {
+    user: User
     users: [User]
-    book(bookId:ID!): Book
+    book(bookId: ID!): Book
 }
 
 type Mutation {
     createUser(username: String!, email: String!, password: String!): User
-    loginUser(email: String!, password: String!): User
+    login(email: String!, password: String!): Auth
+    removeBook(bookId: String): User
+    addUser(username: String!, email: String!, password: String!): Auth
+    saveBook(book: BookInput): User
     deleteBook(bookId: String): User
+    loginUser(email: String!, password: String!): Auth
 }
 `
 

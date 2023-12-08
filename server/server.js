@@ -2,6 +2,9 @@ const express = require('express');
 const { ApolloServer } = require('@apollo/server'); // add apollo server
 const { expressMiddleware } = require('@apollo/server/express4'); // add apollo server middleware for express
 const path = require('path');
+// Add  authmiddleware
+const { authMiddleware } = require('./utils/auth');
+
 
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
@@ -12,15 +15,20 @@ const PORT = process.env.PORT || 3001;
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  playground: true
 });
-
+// Got the playground option off the net. thought i'd try it
 const startApolloServer = async () => {
   await server.start();
   
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   
-  app.use('/graphql', expressMiddleware(server));
+  // add support for authmiddleware to graphql
+  // app.use('/graphql', expressMiddleware(server));
+  app.use('/graphql', expressMiddleware(server, {
+    context: authMiddleware
+  }));
 
   // if we're in production, serve client/build as static assets
   if (process.env.NODE_ENV === 'production') {
